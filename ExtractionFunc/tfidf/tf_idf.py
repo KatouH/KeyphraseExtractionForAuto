@@ -59,7 +59,7 @@ class TFIDF:
                     self.__corpus[arrline[0]] = float(arrline[1])
         saveModel(self)
 
-    def getTFIDF(self,sentence,topK=1):
+    def getTFIDF(self, sentence, topK = 1, withWeight = False):
         word_list = self.dataProcessing(sentence)
         word_frequecny = defaultdict(int)
         for word in word_list:
@@ -81,10 +81,12 @@ class TFIDF:
         word_tf_idf = {}
         for word in word_frequecny:
             word_tf_idf[word] = word_frequecny[word]*word_idf[word]/total
+        if withWeight:
+            tf_idf = sorted(word_tf_idf.items(), key=itemgetter(1), reverse=True)
+        else:
+            tf_idf = sorted(word_tf_idf,key=word_tf_idf.__getitem__,reverse=True)
         
-        tags = sorted(word_tf_idf.items(), key=itemgetter(1), reverse=True)
-
-        return tags[:topK]
+        return tf_idf[:topK]
 
 def saveModel(obj,outfile=_get_path("../../Model/tfidf.pkl")):
     with open(outfile,'wb') as f:
